@@ -153,11 +153,16 @@ def sequence_to_pyseries(
     elif dtype == Struct:
         struct_schema = dtype.to_schema() if isinstance(dtype, Struct) else None
         empty = {}  # type: ignore[var-annotated]
-        return plc.sequence_to_pydf(
+        print(struct_schema)
+        pydf = plc.sequence_to_pydf(
             data=[(empty if v is None else v) for v in values],
             schema=struct_schema,
             orient="row",
-        ).to_struct(name)
+        )
+        from polars._utils.wrap import wrap_df
+
+        print(wrap_df(pydf))
+        return pydf.to_struct(name)
     else:
         if python_dtype is None:
             if value is None:

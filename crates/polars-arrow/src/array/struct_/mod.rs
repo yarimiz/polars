@@ -50,9 +50,9 @@ impl StructArray {
         validity: Option<Bitmap>,
     ) -> PolarsResult<Self> {
         let fields = Self::try_get_fields(&data_type)?;
-        if fields.is_empty() {
-            polars_bail!(ComputeError: "a StructArray must contain at least one field")
-        }
+        // if fields.is_empty() {
+        //     polars_bail!(ComputeError: "a StructArray must contain at least one field")
+        // }
         if fields.len() != values.len() {
             polars_bail!(ComputeError:"a StructArray must have a number of fields in its DataType equal to the number of child values")
         }
@@ -72,7 +72,7 @@ impl StructArray {
                 }
             })?;
 
-        let len = values[0].len();
+        let len = values.first().map(|a| a.len()).unwrap_or(0);
         values
             .iter()
             .map(|a| a.len())
@@ -203,7 +203,7 @@ impl StructArray {
 impl StructArray {
     #[inline]
     fn len(&self) -> usize {
-        self.values[0].len()
+        self.values.first().map(|a| a.len()).unwrap_or(0)
     }
 
     /// The optional validity.

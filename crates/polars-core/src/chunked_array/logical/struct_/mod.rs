@@ -62,7 +62,8 @@ fn fields_to_struct_array(fields: &[Series], physical: bool) -> (ArrayRef, Vec<S
     // we determine fields from arrays as there might be object arrays
     // where the dtype is bound to that single array
     let new_fields = arrays_to_fields(&field_arrays, &fields);
-    let arr = StructArray::new(ArrowDataType::Struct(new_fields), field_arrays, None);
+    let dtype = ArrowDataType::Struct(new_fields);
+    let arr = StructArray::new(dtype, field_arrays, None);
     (Box::new(arr), fields)
 }
 
@@ -113,9 +114,9 @@ impl StructChunked {
                 }
             }
             Ok(Self::new_unchecked(name, &new_fields))
-        } else if fields.is_empty() {
-            let fields = &[Series::new_null("", 0)];
-            Ok(Self::new_unchecked(name, fields))
+        // } else if fields.is_empty() {
+        //     let fields = &[Series::new_null("", 0)];
+        //     Ok(Self::new_unchecked(name, fields))
         } else {
             Ok(Self::new_unchecked(name, fields))
         }
@@ -194,6 +195,10 @@ impl StructChunked {
     fn set_null_count(&mut self) {
         // Count both the total number of nulls and the rows where everything is null
         (self.null_count, self.total_null_count) = (0, 0);
+
+        if self.is_empty() {
+            return;
+        }
 
         // If there is at least one field with no null values, no rows are null. However, we still
         // have to count the number of nulls per field to get the total number. Fortunately this is

@@ -694,6 +694,47 @@ class Config(contextlib.ContextDecorator):
         return cls
 
     @classmethod
+    def set_fmt_str_quotes(cls, active: bool | None) -> type[Config]:
+        """
+        Control whether string values are surrounded by quotes.
+
+        Parameters
+        ----------
+        active : bool
+            Whether to surround each string value by quotes.
+
+        Examples
+        --------
+        >>> df = pl.DataFrame({"text": ["hello", "world"]})
+        >>> df
+        shape: (2, 1)
+        ┌───────┐
+        │ text  │
+        │ ---   │
+        │ str   │
+        ╞═══════╡
+        │ hello │
+        │ world │
+        └───────┘
+        >>> with pl.Config(fmt_str_quotes=True):
+        ...     print(df)
+        shape: (2, 1)
+        ┌─────────┐
+        │ text    │
+        │ ---     │
+        │ str     │
+        ╞═════════╡
+        │ "hello" │
+        │ "world" │
+        └─────────┘
+        """
+        if active is None:
+            os.environ.pop("POLARS_FMT_STR_QUOTES", None)
+        else:
+            os.environ["POLARS_FMT_STR_QUOTES"] = str(int(active))
+        return cls
+
+    @classmethod
     def set_fmt_table_cell_list_len(cls, n: int | None) -> type[Config]:
         """
         Set the number of elements to display for List values.

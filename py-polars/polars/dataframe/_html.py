@@ -108,6 +108,7 @@ class HTMLFormatter:
     def write_body(self) -> None:
         """Write the body of an HTML table."""
         str_len_limit = int(os.environ.get("POLARS_FMT_STR_LEN", default=30))
+        str_quotes = bool(int(os.environ.get("POLARS_FMT_STR_QUOTES", default=0)))
         with Tag(self.elements, "tbody"):
             for r in self.row_idx:
                 with Tag(self.elements, "tr"):
@@ -118,7 +119,9 @@ class HTMLFormatter:
                             else:
                                 series = self.df[:, c]
                                 self.elements.append(
-                                    html.escape(series._s.get_fmt(r, str_len_limit))
+                                    html.escape(
+                                        series._s.get_fmt(r, str_len_limit, str_quotes)
+                                    )
                                 )
 
     def write(self, inner: str) -> None:

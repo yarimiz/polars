@@ -5,6 +5,7 @@ use crate::POOL;
 pub(crate) const FMT_MAX_COLS: &str = "POLARS_FMT_MAX_COLS";
 pub(crate) const FMT_MAX_ROWS: &str = "POLARS_FMT_MAX_ROWS";
 pub(crate) const FMT_STR_LEN: &str = "POLARS_FMT_STR_LEN";
+pub(crate) const FMT_STR_QUOTES: &str = "POLARS_FMT_STR_QUOTES";
 #[cfg(any(feature = "fmt", feature = "fmt_no_tty"))]
 pub(crate) const FMT_TABLE_CELL_ALIGNMENT: &str = "POLARS_FMT_TABLE_CELL_ALIGNMENT";
 #[cfg(any(feature = "fmt", feature = "fmt_no_tty"))]

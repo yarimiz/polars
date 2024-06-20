@@ -17,8 +17,8 @@ try:
 except ImportError:  # Module not available when building docs
     pass
 
+import polars._utils.polars_version
 from polars import api, exceptions, plugins, selectors
-from polars._utils.polars_version import get_polars_version as _get_polars_version
 
 # TODO: remove need for importing wrap utils at top level
 from polars._utils.wrap import wrap_df, wrap_s  # noqa: F401
@@ -192,8 +192,7 @@ from polars.string_cache import (
     using_string_cache,
 )
 
-__version__: str = _get_polars_version()
-del _get_polars_version
+__version__: str = polars._utils.polars_version._get_polars_version()
 
 __all__ = [
     # modules

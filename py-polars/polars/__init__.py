@@ -1,23 +1,21 @@
-import contextlib
 import os
 
-with contextlib.suppress(ImportError):  # Module not available when building docs
-    # ensure the object constructor is known by polars
-    # we set this once on import
+# Check CPU flags. This must be done before importing the Polars Rust bindings.
+import polars._cpu_check
 
-    # This must be done before importing the Polars Rust bindings.
-    import polars._cpu_check
+polars._cpu_check.check_cpu_flags()
 
-    polars._cpu_check.check_cpu_flags()
+try:
+    # Ensure the object constructor is known by Polars.
+    # We set this once on import
 
-    # we also set other function pointers needed
-    # on the rust side. This function is highly
-    # unsafe and should only be called once.
-    from polars.polars import (
-        __register_startup_deps,
-    )
+    # We also set other function pointers needed on the Rust side.
+    # This function is highly unsafe and should only be called once.
+    from polars.polars import __register_startup_deps
 
     __register_startup_deps()
+except ImportError:  # Module not available when building docs
+    pass
 
 from polars import api, exceptions, plugins, selectors
 from polars._utils.polars_version import get_polars_version as _get_polars_version
@@ -416,3 +414,7 @@ def __getattr__(name: str):  # type: ignore[no-untyped-def]
 
     msg = f"module {__name__!r} has no attribute {name!r}"
     raise AttributeError(msg)
+
+
+# Remove symbols imported for internal use
+del os

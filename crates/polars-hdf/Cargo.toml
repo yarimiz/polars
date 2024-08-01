@@ -1,0 +1,15 @@
+[package]
+name = "polars-hdf"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+homepage.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+arrow = { workspace = true, features = [] }
+polars-error = { workspace = true }
+hdf5 = "0.8.1"
+# Statically compile the hdf5 c lib.
+hdf5-sys = { version= "0.8.1", features = ["static"] }
